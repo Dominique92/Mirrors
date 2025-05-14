@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 128" width="256" height="128">
+  <style>
+    :root {
+      --back: #888;
+      --edge: #666;
+      --case: #ddd;
+    }
+
+    path {
+      stroke-width: 3;
+      stroke-linecap: round;
+    }
+  </style>
+
+  <!-- Backgrounds -->
+    <rect x="0" y="0" width="256" height="128" fill="var(--back)" />
+    <rect x="128" y="0" width="32" height="96" fill="var(--case)" />
+    <rect x="192" y="0" width="128" height="96" fill="var(--case)" />
+  <!-- Final crash -->
+    <path d="M135 112 250 112" stroke="red" stroke-dasharray="5,5" />
+    <path d="M131 116 253 116" stroke="black" stroke-dasharray="5,5" />
+    <path d="M135 120 250 120" stroke="red" stroke-dasharray="5,5" />
+    <path d="M131 124 253 124" stroke="black" stroke-dasharray="5,5" />
+  <!-- Horizontal edges -->
+    <rect x="0" y="0" width="256" height="1" fill="var(--edge)" />
+    <rect x="0" y="31" width="256" height="2" fill="var(--edge)" />
+    <rect x="0" y="63" width="256" height="2" fill="var(--edge)" />
+    <rect x="0" y="95" width="256" height="2" fill="var(--edge)" />
+    <rect x="0" y="127" width="256" height="1" fill="var(--edge)" />
+  <!-- Vertical edges -->
+    <rect x="0" y="0" width="1" height="128" fill="var(--edge)" />
+    <rect x="31" y="0" width="2" height="128" fill="var(--edge)" />
+    <rect x="63" y="0" width="2" height="128" fill="var(--edge)" />
+    <rect x="95" y="0" width="2" height="128" fill="var(--edge)" />
+    <rect x="127" y="0" width="2" height="128" fill="var(--edge)" />
+    <rect x="159" y="0" width="2" height="128" fill="var(--edge)" />
+    <rect x="191" y="0" width="2" height="128" fill="var(--edge)" />
+    <rect x="223" y="0" width="2" height="128" fill="var(--edge)" />
+    <rect x="255" y="0" width="1" height="128" fill="var(--edge)" />
+  <!-- Lasers -->
+    <rect x="47" y="0" width="2" height="128" fill="red" />
+    <rect x="79" y="0" width="2" height="128" fill="blue" />
+    <rect x="111" y="0" width="2" height="128" fill="yellow" />
+    <rect x="0" y="47" width="128" height="2" fill="red" />
+    <rect x="0" y="79" width="128" height="2" fill="blue" />
+    <rect x="0" y="111" width="128" height="2" fill="yellow" />
+  <!-- Mirrors -->
+    <path d="M132 60 156 36" stroke="black" />
+    <path d="M132 68 156 92" stroke="black" />
+    <path d="M164 60 188 36" stroke="black" stroke-dasharray="1,7" />
+    <path d="M164 68 188 92" stroke="black" stroke-dasharray="1,7" />
+    <path d="M196 60 220 36" stroke="black" />
+    <path d="M196 68 220 92" stroke="black" stroke-dasharray="1,7" />
+    <path d="M228 60 252 36" stroke="black" stroke-dasharray="1,7" />
+    <path d="M228 68 252 92" stroke="black" />
+    <path d="M196 28 220 4" stroke="green" />
+    <path d="M196 90 220 68" stroke="green" />
+    <path d="M228 4 252 28" stroke="green" />
+    <path d="M228 36 252 60" stroke="green" />
+</svg>
