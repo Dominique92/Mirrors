@@ -1,0 +1,29 @@
+body {
+  color: white;
+  background: #222;
+}
+
+input[type="range"] {
+  width: 50vw;
+}
+
+div {
+  margin-top: 5vh;
+  text-align: center;
+}
+
+p {
+  margin: 0;
+  height: 32px;
+}
+
+div span::selection {
+  background: transparent;
+}
+
+div span {
+  display: inline-block;
+  line-height: 32px;
+  height: 32px;
+  width: 32px;
+}

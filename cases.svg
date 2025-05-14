@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 128" width="160" height="128">
+  <style>
+    :root {
+      --back: #888;
+      --edge: #666;
+      --case: #ddd;
+      --mirror: black;
+    }
+
+    path {
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke: var(--mirror);
+    }
+  </style>
+  <!-- Backgrounds -->
+  <rect x="0" y="0" width="160" height="128" fill="var(--back)" />
+  <rect x="0" y="0" width="32" height="128" fill="var(--case)" />
+  <!-- Vertical edges -->
+  <rect x="0" y="0" width="1" height="128" fill="var(--edge)" />
+  <rect x="31" y="0" width="2" height="128" fill="var(--edge)" />
+  <rect x="63" y="0" width="2" height="128" fill="var(--edge)" />
+  <rect x="95" y="0" width="2" height="128" fill="var(--edge)" />
+  <rect x="127" y="0" width="2" height="128" fill="var(--edge)" />
+  <rect x="159" y="0" width="1" height="128" fill="var(--edge)" />
+  <!-- Horizontal edges -->
+  <rect x="0" y="0" width="196" height="1" fill="var(--edge)" />
+  <rect x="0" y="31" width="196" height="2" fill="var(--edge)" />
+  <rect x="0" y="63" width="196" height="2" fill="var(--edge)" />
+  <rect x="0" y="95" width="196" height="2" fill="var(--edge)" />
+  <rect x="0" y="127" width="196" height="2" fill="var(--edge)" />
+  <!-- Lasers -->
+  <rect x="47" y="0" width="2" height="128" fill="yellow" />
+  <rect x="79" y="0" width="2" height="128" fill="blue" />
+  <rect x="111" y="0" width="2" height="128" fill="red" />
+  <rect x="32" y="47" width="128" height="2" fill="yellow" />
+  <rect x="32" y="79" width="128" height="2" fill="blue" />
+  <rect x="32" y="111" width="128" height="2" fill="red" />
+  <!-- Mirrors -->
+  <path d="M4 68 28 92" />
+  <path d="M4 124 28 100" />
+</svg>
