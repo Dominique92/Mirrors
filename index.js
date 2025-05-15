@@ -6,7 +6,9 @@ const inputEls = document.getElementsByTagName('input'),
   size = inputEls[0].value = parseInt(sPars[1], 10),
   size1 = size + 1,
   density = (inputEls[1].value = dPars[1]) / 10;
-let error = false;
+
+let currentColor = 0,
+  error = false;
 
 // Display input values
 function display() {
@@ -16,17 +18,21 @@ function display() {
 display();
 
 // Build the table
-for (let x = 0; x < size + 2; x++) {
+for (let v = 0; v < size + 2; v++) {
   const trEl = document.createElement('p');
   divEl.appendChild(trEl);
 
-  for (let y = 0; y < size + 2; y++) {
+  for (let h = 0; h < size + 2; h++) {
     const tdEl = document.createElement('span');
     trEl.appendChild(tdEl);
     tdEl.innerHTML = '&nbsp;';
+    tdEl.laserH = 0;
+    tdEl.laserV = 0;
+    tdEl.x = h;
+    tdEl.y = v;
 
     // Side boxes
-    if (x % size1 === 0 ^ y % size1 === 0) {
+    if (v % size1 === 0 ^ h % size1 === 0) {
       tdEl.style.backgroundImage = "url('boxes.svg')";
       tdEl.innerHTML = '&#128367;';
       tdEl.onclick = clickLight;
@@ -34,16 +40,14 @@ for (let x = 0; x < size + 2; x++) {
       tdEl.mark = 3; // Open
     }
     // Central boxes
-    if (x % size1 && y % size1) {
+    if (v % size1 && h % size1) {
       tdEl.style.backgroundImage = 'url("boxes.svg")';
-      tdEl.onclick = clickMirror;
+      tdEl.onclick = clickBox;
       tdEl.style.cursor = 'pointer';
       tdEl.mark = 0; // Close
       tdEl.mirror = Math.max(0, Math.floor(Math.random() * 5 - 2));
-      tdEl.mirror = Math.max(0, Math.floor(Math.random() * 5 - 2));
+      //*DCMM*/tdEl.mirror = 0;
     }
-    tdEl.laserH = 0;
-    tdEl.laserV = 0;
   }
 }
 
@@ -57,6 +61,10 @@ function displayBoxes() {
         // Open boxes
         el.style.backgroundPositionX = -(el.mirror ? 4 : el.laserV) * 32 + 'px';
         el.style.backgroundPositionY = -(el.mirror ? 3 : el.laserH) * 32 + 'px';
+      } else if (error && !el.mirror) {
+        // Central boxes / open
+        el.style.backgroundPositionX = -el.laserV * 32 + 'px';
+        el.style.backgroundPositionY = -el.laserH * 32 + 'px';
       } else if (error) {
         // Central boxes / error
         el.style.backgroundPositionX = -(5 + el.mirror) * 32 + 'px';
@@ -72,22 +80,57 @@ function displayBoxes() {
 displayBoxes();
 
 function clickLight(evt) {
-  /*DCMM*/
-  console.log(evt.target.style);
+  currentColor = currentColor % 3 + 1;
+
+  // Erase all laser same currentColor
+  Array.from(spanEls).forEach(el => {
+    if (el.laserH === currentColor)
+      el.laserH = 0;
+    if (el.laserV === currentColor)
+      el.laserV = 0;
+  });
+
+  // Add laser & propagate
+  if (evt.target.x === 0)
+    setColorAndPropagate(0, evt.target.y, 1, 0);
+  if (evt.target.x === size1)
+    setColorAndPropagate(size1, evt.target.y, -1, 0);
+  if (evt.target.y === 0)
+    setColorAndPropagate(evt.target.x, 0, 0, 1);
+  if (evt.target.y === size1)
+    setColorAndPropagate(evt.target.x, size1, 0, -1);
+
+  displayBoxes();
 }
 
-function clickMirror(evt) {
-  if (evt.ctrlKey) {
+function setColorAndPropagate(x, y, dx, dy) {
+  if (0 <= x && x <= size1 && 0 <= y && y <= size1) {
+    const el = divEl.children[y].children[x];
+
+    if (el.mirror === 1)
+      setColorAndPropagate(x - dy, y - dx, -dy, -dx);
+    else if (el.mirror === 2)
+      setColorAndPropagate(x + dy, y + dx, dy, dx);
+    else {
+      // Set the laser in the box
+      if (dx) el.laserH = currentColor;
+      if (dy) el.laserV = currentColor;
+      setColorAndPropagate(x + dx, y + dy, dx, dy);
+    }
+  }
+}
+
+function clickBox(evt) {
+  if (evt.ctrlKey || evt.shiftKey) {
     evt.target.mark = 3; // Open clicked box
 
     // Remove all free boxes
     if (evt.target.mirror) {
-      error = true;
-
       Array.from(spanEls).forEach(el => {
         if (!el.mark && !el.mirror)
           el.mark = 3; // Open
       });
+      error = true;
     }
   }
   // Switch marks
