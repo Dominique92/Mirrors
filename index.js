@@ -30,30 +30,33 @@ for (let v = 0; v < size + 2; v++) {
   divEl.appendChild(trEl);
 
   for (let h = 0; h < size + 2; h++) {
-    const tdEl = document.createElement('span');
-    trEl.appendChild(tdEl);
-    tdEl.innerHTML = '&nbsp;';
-    tdEl.x = h;
-    tdEl.y = v;
-    tdEl.mirror = 0; // 0:none 1:\ 2:/ 3:open
-    tdEl.mark = 0;
-    tdEl.laserH = 0; // 0=none 1=red 2=blue 3=yellow
-    tdEl.laserV = 0;
+    const spanEl = document.createElement('span');
+    trEl.appendChild(spanEl);
+    spanEl.innerHTML = '&nbsp;';
+    spanEl.x = h;
+    spanEl.y = v;
+    /*      spanEl.style.height =  
+          spanEl.style.lineHeight =  
+          spanEl.style.width = '56px';*/
+    spanEl.mirror = 0; // 0:none 1:\ 2:/ 3:open
+    spanEl.mark = 0;
+    spanEl.laserH = 0; // 0=none 1=red 2=blue 3=yellow
+    spanEl.laserV = 0;
 
     // Side boxes
     if (v % size1 === 0 ^ h % size1 === 0) {
-      tdEl.style.backgroundImage = "url('boxes.svg')";
-      tdEl.innerHTML = '&#128367;';
-      tdEl.onclick = clickLight;
-      tdEl.style.cursor = 'pointer';
-      tdEl.mark = 3;
+      spanEl.style.backgroundImage = "url('boxes.svg')";
+      spanEl.innerHTML = '&#10036;';
+      spanEl.onclick = clickLight;
+      spanEl.style.cursor = 'pointer';
+      spanEl.mark = 3;
     }
     // Central boxes
     if (v % size1 && h % size1) {
-      tdEl.style.backgroundImage = 'url("boxes.svg")';
-      tdEl.onclick = clickBox;
-      tdEl.ondblclick = clickBox;
-      tdEl.style.cursor = 'pointer';
+      spanEl.style.backgroundImage = 'url("boxes.svg")';
+      spanEl.onclick = clickBox;
+      spanEl.ondblclick = clickBox;
+      spanEl.style.cursor = 'pointer';
     }
   }
 }

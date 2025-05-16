@@ -12,12 +12,18 @@ input[type="range"] {
   width: 100%;
 }
 
+form>p {
   text-align: center;
 }
 
 div>p {
-  margin: 0;
   height: 32px;
+  margin: 0;
+}
+
+body>p {
+  margin: 0.3em;
+  text-indent: 1em;
 }
 
 div span::selection {
