@@ -74,29 +74,35 @@ for (let nbm = 0; nbm < nbMiroirs;) {
 
 // DISPLAYS
 let currentColor = 0,
-  error = false;
-//error = true; //////////////////////////
+  ended = false;
 
 function displayBoxes() {
+  // Count results
+  ended = true;
   Array.from(spanEls).forEach(el => {
-    if (typeof el.mark === 'number') {
-      if (el.mark === 3) {
-        // Open boxes
-        el.style.backgroundPositionX = -(el.mirror ? 4 : el.laserV) * 32 + 'px';
-        el.style.backgroundPositionY = -(el.mirror ? 3 : el.laserH) * 32 + 'px';
-      } else if (error && !el.mirror) {
-        // Central boxes / open
-        el.style.backgroundPositionX = -el.laserV * 32 + 'px';
-        el.style.backgroundPositionY = -el.laserH * 32 + 'px';
-      } else if (error) {
-        // Central boxes / error
-        el.style.backgroundPositionX = -(5 + el.mirror) * 32 + 'px';
-        el.style.backgroundPositionY = -el.mark * 32 + 'px';
-      } else {
-        // Central boxes / game
-        el.style.backgroundPositionX = '-128px';
-        el.style.backgroundPositionY = -el.mark * 32 + 'px';
-      }
+    if (el.x % size1 && el.y % size1 &&
+      el.mark !== el.mirror)
+      ended = false;
+  });
+
+  // Display boxes
+  Array.from(spanEls).forEach(el => {
+    if (el.mark === 3) {
+      // Open boxes
+      el.style.backgroundPositionX = -(el.mirror ? 4 : el.laserV) * 32 + 'px';
+      el.style.backgroundPositionY = -(el.mirror ? 3 : el.laserH) * 32 + 'px';
+    } else if (ended && !el.mirror) {
+      // Central boxes / open
+      el.style.backgroundPositionX = -el.laserV * 32 + 'px';
+      el.style.backgroundPositionY = -el.laserH * 32 + 'px';
+    } else if (ended) {
+      // Central boxes / ended
+      el.style.backgroundPositionX = -(5 + el.mirror) * 32 + 'px';
+      el.style.backgroundPositionY = -el.mark * 32 + 'px';
+    } else {
+      // Central boxes / game
+      el.style.backgroundPositionX = '-128px';
+      el.style.backgroundPositionY = -el.mark * 32 + 'px';
     }
   });
 }
@@ -153,7 +159,7 @@ function clickBox(evt) {
         if (!el.mark && !el.mirror)
           el.mark = 3; // Open
       });
-      error = true;
+      ended = true;
     }
   }
   // Switch marks
