@@ -9,18 +9,11 @@
 
 <body>
   <form action="." method="GET">
-    <p>
-      <label>Taille</label>
-      <input type="range" name="s" min="1" max="12" oninput="display()" onchange="this.form.submit()" />
-      <span></span>
-    </p>
-    <p>
-      <label>Densité</label>
-      <input type="range" name="d" min="1" max="9" oninput="display()" onchange="this.form.submit()" />
-      <span></span>0 %
-    </p>
+    <input type="range" name="s" min="1" max="12" oninput="displayInputs()" onchange="this.form.submit()" />
+    <p></p>
+    <input type="range" name="d" min="5" max="20" oninput="displayInputs()" onchange="this.form.submit()" />
+    <p></p>
   </form>
-
   <div></div>
 </body>
 

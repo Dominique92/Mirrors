@@ -1,21 +1,25 @@
 const inputEls = document.getElementsByTagName('input'),
+  pEls = document.getElementsByTagName('p'),
   divEl = document.getElementsByTagName('div')[0],
   spanEls = document.getElementsByTagName('span'),
-  sPars = location.search.match(/s=([0-9]+)/u) || [0, 4],
-  dPars = location.search.match(/d=([1-9])/u) || [0, 2],
-  size = inputEls[0].value = parseInt(sPars[1], 10),
+  sPars = location.search.match(/s=([0-9]+)/u) || [null, 4],
+  size = parseInt(sPars[1], 10),
   size1 = size + 1,
-  density = (inputEls[1].value = dPars[1]) / 10;
+  dPars = location.search.match(/d=([0-9]+)/u) || [null, 20],
+  nbMiroirs = Math.ceil(dPars[1] / 100 * size * size);
 
-let currentColor = 0,
-  error = false;
+// Initialise input fields with parameters
+inputEls[0].value = sPars[1];
+inputEls[1].value = dPars[1];
 
-// Display input values
-function display() {
-  inputEls[0].parentNode.children[2].innerHTML = inputEls[0].value;
-  inputEls[1].parentNode.children[2].innerHTML = inputEls[1].value;
+// Display sliders result
+function displayInputs() {
+  const nbm = Math.ceil(inputEls[1].value / 100 * size * size);
+
+  pEls[0].innerHTML = 'Taille : ' + inputEls[0].value + ' * ' + inputEls[0].value;
+  pEls[1].innerHTML = nbm + ' miroir' + (nbm > 1 ? 's' : '');
 }
-display();
+displayInputs();
 
 // Build the table
 for (let v = 0; v < size + 2; v++) {
@@ -26,10 +30,12 @@ for (let v = 0; v < size + 2; v++) {
     const tdEl = document.createElement('span');
     trEl.appendChild(tdEl);
     tdEl.innerHTML = '&nbsp;';
-    tdEl.laserH = 0;
-    tdEl.laserV = 0;
     tdEl.x = h;
     tdEl.y = v;
+    tdEl.mirror = 0; // 0:none 1:\ 2:/ 3:open
+    tdEl.mark = 0;
+    tdEl.laserH = 0; // 0=none 1=red 2=blue 3=yellow
+    tdEl.laserV = 0;
 
     // Side boxes
     if (v % size1 === 0 ^ h % size1 === 0) {
@@ -37,22 +43,39 @@ for (let v = 0; v < size + 2; v++) {
       tdEl.innerHTML = '&#128367;';
       tdEl.onclick = clickLight;
       tdEl.style.cursor = 'pointer';
-      tdEl.mark = 3; // Open
+      tdEl.mark = 3;
     }
     // Central boxes
     if (v % size1 && h % size1) {
       tdEl.style.backgroundImage = 'url("boxes.svg")';
       tdEl.onclick = clickBox;
+      tdEl.ondblclick = clickBox;
       tdEl.style.cursor = 'pointer';
-      tdEl.mark = 0; // Close
-      tdEl.mirror = Math.max(0, Math.floor(Math.random() * 5 - 2));
-      //*DCMM*/tdEl.mirror = 0;
     }
   }
 }
 
-// .laserH, .laserV : 0=none 1=red 2=blue 3=yellow
-// .mirror, .mark : 0:none 1:\ 2:/ 3:open
+// Populates the mirrors
+for (let nbm = 0; nbm < nbMiroirs;) {
+  // Add 1 mirror
+  divEl
+    .children[Math.floor(Math.random() * size) + 1]
+    .children[Math.floor(Math.random() * size) + 1]
+    .mirror =
+    Math.floor(Math.random() * 2) + 1;
+
+  // Count the mirrors
+  nbm = 0;
+  Array.from(spanEls).forEach(el => {
+    if (el.mirror)
+      nbm++;
+  });
+}
+
+// DISPLAYS
+let currentColor = 0,
+  error = false;
+//error = true; //////////////////////////
 
 function displayBoxes() {
   Array.from(spanEls).forEach(el => {
@@ -121,7 +144,7 @@ function setColorAndPropagate(x, y, dx, dy) {
 }
 
 function clickBox(evt) {
-  if (evt.ctrlKey || evt.shiftKey) {
+  if (evt.ctrlKey || evt.shiftKey || evt.type === 'dblclick') {
     evt.target.mark = 3; // Open clicked box
 
     // Remove all free boxes
