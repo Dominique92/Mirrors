@@ -3,17 +3,19 @@ body {
   background: #222;
 }
 
+div {
+  margin: 5vh 0;
+  text-align: center;
+}
+
 input[type="range"] {
   width: 100%;
 }
 
-div {
-  margin-top: 5vh;
   text-align: center;
 }
 
-p {
-  text-align: center;
+div>p {
   margin: 0;
   height: 32px;
 }

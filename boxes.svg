@@ -17,10 +17,8 @@
     <rect x="128" y="0" width="32" height="96" fill="var(--case)" />
     <rect x="192" y="0" width="128" height="96" fill="var(--case)" />
   <!-- Final crash -->
-    <path d="M135 112 250 112" stroke="red" stroke-dasharray="5,5" />
-    <path d="M131 116 253 116" stroke="black" stroke-dasharray="5,5" />
-    <path d="M135 120 250 120" stroke="red" stroke-dasharray="5,5" />
-    <path d="M131 124 253 124" stroke="black" stroke-dasharray="5,5" />
+    <path d="M196 124 204 108 212 116 220 100" stroke="green" stroke-dasharray="5,5" />
+    <path d="M228 100 236 116 244 108 252 124" stroke="green" stroke-dasharray="5,5" />
   <!-- Horizontal edges -->
     <rect x="0" y="0" width="256" height="1" fill="var(--edge)" />
     <rect x="0" y="31" width="256" height="2" fill="var(--edge)" />

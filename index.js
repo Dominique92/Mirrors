@@ -5,16 +5,19 @@ const inputEls = document.getElementsByTagName('input'),
   sPars = location.search.match(/s=([0-9]+)/u) || [null, 4],
   size = parseInt(sPars[1], 10),
   size1 = size + 1,
-  dPars = location.search.match(/d=([0-9]+)/u) || [null, 20],
-  nbMiroirs = Math.ceil(dPars[1] / 100 * size * size);
+  dPars = location.search.match(/d=([0-9]+)/u) || [null, 50];
 
 // Initialise input fields with parameters
 inputEls[0].value = sPars[1];
 inputEls[1].value = dPars[1];
 
 // Display sliders result
+function nbMiroirs() {
+  return Math.min(size * size, Math.ceil(inputEls[1].value / 66 * size));
+}
+
 function displayInputs() {
-  const nbm = Math.ceil(inputEls[1].value / 100 * size * size);
+  const nbm = nbMiroirs();
 
   pEls[0].innerHTML = 'Taille : ' + inputEls[0].value + ' * ' + inputEls[0].value;
   pEls[1].innerHTML = nbm + ' miroir' + (nbm > 1 ? 's' : '');
@@ -56,7 +59,7 @@ for (let v = 0; v < size + 2; v++) {
 }
 
 // Populates the mirrors
-for (let nbm = 0; nbm < nbMiroirs;) {
+for (let nbm = 0; nbm < nbMiroirs();) {
   // Add 1 mirror
   divEl
     .children[Math.floor(Math.random() * size) + 1]
@@ -77,19 +80,21 @@ let currentColor = 0,
   ended = false;
 
 function displayBoxes() {
-  // Count results
-  ended = true;
-  Array.from(spanEls).forEach(el => {
-    if (el.x % size1 && el.y % size1 &&
-      el.mark !== el.mirror)
-      ended = false;
-  });
+  // Clear all boxes il all mirrors are found
+  if (!ended) {
+    ended = true;
+    Array.from(spanEls).forEach(el => {
+      if (el.x % size1 && el.y % size1 &&
+        el.mark !== el.mirror)
+        ended = false;
+    });
+  }
 
   // Display boxes
   Array.from(spanEls).forEach(el => {
     if (el.mark === 3) {
       // Open boxes
-      el.style.backgroundPositionX = -(el.mirror ? 4 : el.laserV) * 32 + 'px';
+      el.style.backgroundPositionX = -(el.mirror ? 5 + el.mirror : el.laserV) * 32 + 'px';
       el.style.backgroundPositionY = -(el.mirror ? 3 : el.laserH) * 32 + 'px';
     } else if (ended && !el.mirror) {
       // Central boxes / open
@@ -151,11 +156,13 @@ function setColorAndPropagate(x, y, dx, dy) {
 
 function clickBox(evt) {
   if (evt.ctrlKey || evt.shiftKey || evt.type === 'dblclick') {
-    evt.target.mark = 3; // Open clicked box
+    // Open clicked box
+    evt.target.mark = 3;
 
-    // Remove all free boxes
+    // Crash if there is a mirror
     if (evt.target.mirror) {
       Array.from(spanEls).forEach(el => {
+        // Remove all free boxes
         if (!el.mark && !el.mirror)
           el.mark = 3; // Open
       });
