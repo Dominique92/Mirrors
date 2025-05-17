@@ -10,6 +10,10 @@ const inputEls = document.getElementsByTagName('input'),
 let currentColor = 0,
   ended = false;
 
+//TODO BUG ne compte pas les miroirs
+//TODO BUG déclenchement gagné / film gagné
+//TODO lint css & html
+
 // Initialise input fields with parameters
 inputEls[0].value = sPars[1];
 inputEls[1].value = dPars[1];
@@ -27,18 +31,6 @@ function displayInputs(nbm) {
     pEls[1].innerHTML += ' / ' + nbm + ' marque' + (nbm > 1 ? 's' : '');
 }
 displayInputs();
-
-// Adapt to the window size
-/*
-function windowResize() {
-  const scale = (window.innerWidth - 20) / 32 / (size + 2);
-
-  divEl.style.transform = 'scale(' + scale + ')';
-  divEl.style.marginTop = (32 * scale - 32) + 'px';
-}
-windowResize();
-window.onresize = windowResize;
-*/
 
 // DISPLAY GAME
 function displayBoxes() {
@@ -158,9 +150,6 @@ for (let v = 0; v < size + 2; v++) {
     spanEl.innerHTML = '&nbsp;';
     spanEl.x = h;
     spanEl.y = v;
-    //spanEl.style.height =  
-    //spanEl.style.lineHeight =  
-    //spanEl.style.width = '56px';*/
     spanEl.mirror = 0; // 0:none 1:\ 2:/ 3:open
     spanEl.mark = 0;
     spanEl.laserH = 0; // 0=none 1=red 2=blue 3=yellow
@@ -168,18 +157,14 @@ for (let v = 0; v < size + 2; v++) {
 
     // Side boxes
     if (v % size1 === 0 ^ h % size1 === 0) {
-      spanEl.style.backgroundImage = "url('boxes.svg')";
       spanEl.innerHTML = '&#10036;';
       spanEl.onclick = clickLight;
-      spanEl.style.cursor = 'pointer';
       spanEl.mark = 3;
     }
     // Central boxes
     if (v % size1 && h % size1) {
-      spanEl.style.backgroundImage = 'url("boxes.svg")';
       spanEl.onclick = clickBox;
       spanEl.ondblclick = clickBox;
-      spanEl.style.cursor = 'pointer';
     }
   }
 }

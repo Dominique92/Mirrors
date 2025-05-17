@@ -3,39 +3,43 @@ body {
   background: #222;
 }
 
-div {
-  margin: 5vh 0;
+/* Tuning */
+form input[type="range"] {
+  width: calc(100% - 4px);
+}
+
+form p {
   text-align: center;
 }
 
-input[type="range"] {
-  width: 100%;
-  margin: 20px;
-}
-
-form>p {
-  margin: 0;
-  text-align: center;
-}
-
-div>p {
-  height: 32px;
-  height: 32px;
-  margin: 0;
-}
-
+/* Help */
 body>p {
   margin: 0.3em;
   text-indent: 1em;
 }
 
-div span::selection {
-  background: transparent;
+/* Boxes */
+div {
+  margin: 5vh 0;
+  text-align: center;
+}
+
+div>p {
+  margin: 0;
 }
 
 div span {
   display: inline-block;
   line-height: 32px;
-  height: 32px;
   width: 32px;
+}
+
+div p:not(:first-child):not(:last-child) span,
+div span:not(:first-child):not(:last-child) {
+  background-image: url("boxes.svg");
+  cursor: pointer;
+}
+
+div span::selection {
+  background: transparent;
 }
