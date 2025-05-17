@@ -12,26 +12,38 @@ inputEls[0].value = sPars[1];
 inputEls[1].value = dPars[1];
 
 // Display sliders result
-function nbMiroirs() {
+function nbMirrors() {
   return Math.min(size * size, Math.ceil(inputEls[1].value / 66 * size));
 }
 
-function displayInputs() {
-  const nbm = nbMiroirs();
-
+function displayInputs(nbm) {
   pEls[0].innerHTML = 'Taille : ' + inputEls[0].value + ' * ' + inputEls[0].value;
-  pEls[1].innerHTML = nbm + ' miroir' + (nbm > 1 ? 's' : '');
+  pEls[1].innerHTML = nbMirrors() + ' miroir' + (nbMirrors() > 1 ? 's' : '');
+
+  if (nbm)
+    pEls[1].innerHTML += ' / ' + nbm + ' marque' + (nbm > 1 ? 's' : '');
 }
 displayInputs();
 
+
+function windowResize() {
+  const scale = (window.innerWidth - 20) / 32 / (size + 2);
+
+  //divEl.style.transform = 'scale(' + scale + ')';
+  //divEl.style.marginTop = (32 * scale - 32) + 'px';
+}
+windowResize();
+onresize = windowResize;
+
 // Build the table
 for (let v = 0; v < size + 2; v++) {
-  const trEl = document.createElement('p');
-  divEl.appendChild(trEl);
+  const pEl = document.createElement('p');
+
+  divEl.appendChild(pEl);
 
   for (let h = 0; h < size + 2; h++) {
     const spanEl = document.createElement('span');
-    trEl.appendChild(spanEl);
+    pEl.appendChild(spanEl);
     spanEl.innerHTML = '&nbsp;';
     spanEl.x = h;
     spanEl.y = v;
@@ -62,7 +74,7 @@ for (let v = 0; v < size + 2; v++) {
 }
 
 // Populates the mirrors
-for (let nbm = 0; nbm < nbMiroirs();) {
+for (let nbm = 0; nbm < nbMirrors();) {
   // Add 1 mirror
   divEl
     .children[Math.floor(Math.random() * size) + 1]
@@ -83,14 +95,21 @@ let currentColor = 0,
   ended = false;
 
 function displayBoxes() {
-  // Clear all boxes il all mirrors are found
+  // Clear all boxes if all mirrors are found
   if (!ended) {
+    let nbm = 0;
+
     ended = true;
     Array.from(spanEls).forEach(el => {
-      if (el.x % size1 && el.y % size1 &&
-        el.mark !== el.mirror)
-        ended = false;
+      if (el.x % size1 && el.y % size1) {
+        if (el.mark !== el.mirror)
+          ended = false;
+        if (el.mark)
+          nbm++;
+      }
     });
+
+    displayInputs(nbm);
   }
 
   // Display boxes
