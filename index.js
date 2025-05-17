@@ -10,9 +10,17 @@ const inputEls = document.getElementsByTagName('input'),
 let currentColor = 0,
   ended = false;
 
+// Install as Progressive Web Application
+if ("serviceWorker" in navigator)
+  navigator.serviceWorker.register("service-worker.js")
+  .catch(error => console.log(error));
+
 //TODO BUG ne compte pas les miroirs
 //TODO BUG déclenchement gagné / film gagné
 //TODO lint css & html
+//TODO passer paramètres en # (comp.PWA)
+//TODO faire une icone Miroir
+//TODO bords ombre 3D
 
 // Initialise input fields with parameters
 inputEls[0].value = sPars[1];
