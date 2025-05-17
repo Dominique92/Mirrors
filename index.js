@@ -7,6 +7,9 @@ const inputEls = document.getElementsByTagName('input'),
   size1 = size + 1,
   dPars = location.search.match(/d=([0-9]+)/u) || [null, 50];
 
+let currentColor = 0,
+  ended = false;
+
 // Initialise input fields with parameters
 inputEls[0].value = sPars[1];
 inputEls[1].value = dPars[1];
@@ -25,16 +28,124 @@ function displayInputs(nbm) {
 }
 displayInputs();
 
-
+// Adapt to the window size
+/*
 function windowResize() {
   const scale = (window.innerWidth - 20) / 32 / (size + 2);
 
-  //divEl.style.transform = 'scale(' + scale + ')';
-  //divEl.style.marginTop = (32 * scale - 32) + 'px';
+  divEl.style.transform = 'scale(' + scale + ')';
+  divEl.style.marginTop = (32 * scale - 32) + 'px';
 }
 windowResize();
-onresize = windowResize;
+window.onresize = windowResize;
+*/
 
+// DISPLAY GAME
+function displayBoxes() {
+  // Clear all boxes if all mirrors are found
+  if (!ended) {
+    let nbm = 0;
+
+    ended = true;
+    Array.from(spanEls).forEach(el => {
+      if (el.x % size1 && el.y % size1) {
+        if (el.mark !== el.mirror)
+          ended = false;
+        if (el.mark)
+          nbm++;
+      }
+    });
+
+    displayInputs(nbm);
+  }
+
+  // Display boxes
+  Array.from(spanEls).forEach(el => {
+    if (el.mark === 3) {
+      // Open boxes
+      el.style.backgroundPositionX = -(el.mirror ? 5 + el.mirror : el.laserV) * 32 + 'px';
+      el.style.backgroundPositionY = -(el.mirror ? 3 : el.laserH) * 32 + 'px';
+    } else if (ended && !el.mirror) {
+      // Central boxes / open
+      el.style.backgroundPositionX = -el.laserV * 32 + 'px';
+      el.style.backgroundPositionY = -el.laserH * 32 + 'px';
+    } else if (ended) {
+      // Central boxes / ended
+      el.style.backgroundPositionX = -(5 + el.mirror) * 32 + 'px';
+      el.style.backgroundPositionY = -el.mark * 32 + 'px';
+    } else {
+      // Central boxes / game
+      el.style.backgroundPositionX = '-128px';
+      el.style.backgroundPositionY = -el.mark * 32 + 'px';
+    }
+  });
+}
+
+// ACTIONS
+function setColorAndPropagate(x, y, dx, dy) {
+  if (0 <= x && x <= size1 && 0 <= y && y <= size1) {
+    const el = divEl.children[y].children[x];
+
+    if (el.mirror === 1)
+      setColorAndPropagate(x - dy, y - dx, -dy, -dx);
+    else if (el.mirror === 2)
+      setColorAndPropagate(x + dy, y + dx, dy, dx);
+    else {
+      // Set the laser in the box
+      if (dx) el.laserH = currentColor;
+      if (dy) el.laserV = currentColor;
+      setColorAndPropagate(x + dx, y + dy, dx, dy);
+    }
+  }
+}
+
+function clickLight(evt) {
+  currentColor = currentColor % 3 + 1;
+
+  // Erase all laser same currentColor
+  Array.from(spanEls).forEach(el => {
+    if (el.laserH === currentColor)
+      el.laserH = 0;
+    if (el.laserV === currentColor)
+      el.laserV = 0;
+  });
+
+  // Add laser & propagate
+  if (evt.target.x === 0)
+    setColorAndPropagate(0, evt.target.y, 1, 0);
+  if (evt.target.x === size1)
+    setColorAndPropagate(size1, evt.target.y, -1, 0);
+  if (evt.target.y === 0)
+    setColorAndPropagate(evt.target.x, 0, 0, 1);
+  if (evt.target.y === size1)
+    setColorAndPropagate(evt.target.x, size1, 0, -1);
+
+  displayBoxes();
+}
+
+function clickBox(evt) {
+  if (evt.ctrlKey || evt.shiftKey || evt.type === 'dblclick') {
+    // Open clicked box
+    evt.target.mark = 3;
+
+    // Crash if there is a mirror
+    if (evt.target.mirror) {
+      Array.from(spanEls).forEach(el => {
+        // Remove all free boxes
+        if (!el.mark && !el.mirror)
+          el.mark = 3; // Open
+      });
+      ended = true;
+    }
+  }
+  // Switch marks
+  else if (evt.target.mark < 3)
+    evt.target.mark = ++evt.target.mark % 3;
+
+  displayBoxes();
+}
+
+// INIT
 // Build the table
 for (let v = 0; v < size + 2; v++) {
   const pEl = document.createElement('p');
@@ -47,9 +158,9 @@ for (let v = 0; v < size + 2; v++) {
     spanEl.innerHTML = '&nbsp;';
     spanEl.x = h;
     spanEl.y = v;
-    /*      spanEl.style.height =  
-          spanEl.style.lineHeight =  
-          spanEl.style.width = '56px';*/
+    //spanEl.style.height =  
+    //spanEl.style.lineHeight =  
+    //spanEl.style.width = '56px';*/
     spanEl.mirror = 0; // 0:none 1:\ 2:/ 3:open
     spanEl.mark = 0;
     spanEl.laserH = 0; // 0=none 1=red 2=blue 3=yellow
@@ -90,110 +201,4 @@ for (let nbm = 0; nbm < nbMirrors();) {
   });
 }
 
-// DISPLAYS
-let currentColor = 0,
-  ended = false;
-
-function displayBoxes() {
-  // Clear all boxes if all mirrors are found
-  if (!ended) {
-    let nbm = 0;
-
-    ended = true;
-    Array.from(spanEls).forEach(el => {
-      if (el.x % size1 && el.y % size1) {
-        if (el.mark !== el.mirror)
-          ended = false;
-        if (el.mark)
-          nbm++;
-      }
-    });
-
-    displayInputs(nbm);
-  }
-
-  // Display boxes
-  Array.from(spanEls).forEach(el => {
-    if (el.mark === 3) {
-      // Open boxes
-      el.style.backgroundPositionX = -(el.mirror ? 5 + el.mirror : el.laserV) * 32 + 'px';
-      el.style.backgroundPositionY = -(el.mirror ? 3 : el.laserH) * 32 + 'px';
-    } else if (ended && !el.mirror) {
-      // Central boxes / open
-      el.style.backgroundPositionX = -el.laserV * 32 + 'px';
-      el.style.backgroundPositionY = -el.laserH * 32 + 'px';
-    } else if (ended) {
-      // Central boxes / ended
-      el.style.backgroundPositionX = -(5 + el.mirror) * 32 + 'px';
-      el.style.backgroundPositionY = -el.mark * 32 + 'px';
-    } else {
-      // Central boxes / game
-      el.style.backgroundPositionX = '-128px';
-      el.style.backgroundPositionY = -el.mark * 32 + 'px';
-    }
-  });
-}
 displayBoxes();
-
-function clickLight(evt) {
-  currentColor = currentColor % 3 + 1;
-
-  // Erase all laser same currentColor
-  Array.from(spanEls).forEach(el => {
-    if (el.laserH === currentColor)
-      el.laserH = 0;
-    if (el.laserV === currentColor)
-      el.laserV = 0;
-  });
-
-  // Add laser & propagate
-  if (evt.target.x === 0)
-    setColorAndPropagate(0, evt.target.y, 1, 0);
-  if (evt.target.x === size1)
-    setColorAndPropagate(size1, evt.target.y, -1, 0);
-  if (evt.target.y === 0)
-    setColorAndPropagate(evt.target.x, 0, 0, 1);
-  if (evt.target.y === size1)
-    setColorAndPropagate(evt.target.x, size1, 0, -1);
-
-  displayBoxes();
-}
-
-function setColorAndPropagate(x, y, dx, dy) {
-  if (0 <= x && x <= size1 && 0 <= y && y <= size1) {
-    const el = divEl.children[y].children[x];
-
-    if (el.mirror === 1)
-      setColorAndPropagate(x - dy, y - dx, -dy, -dx);
-    else if (el.mirror === 2)
-      setColorAndPropagate(x + dy, y + dx, dy, dx);
-    else {
-      // Set the laser in the box
-      if (dx) el.laserH = currentColor;
-      if (dy) el.laserV = currentColor;
-      setColorAndPropagate(x + dx, y + dy, dx, dy);
-    }
-  }
-}
-
-function clickBox(evt) {
-  if (evt.ctrlKey || evt.shiftKey || evt.type === 'dblclick') {
-    // Open clicked box
-    evt.target.mark = 3;
-
-    // Crash if there is a mirror
-    if (evt.target.mirror) {
-      Array.from(spanEls).forEach(el => {
-        // Remove all free boxes
-        if (!el.mark && !el.mirror)
-          el.mark = 3; // Open
-      });
-      ended = true;
-    }
-  }
-  // Switch marks
-  else if (evt.target.mark < 3)
-    evt.target.mark = ++evt.target.mark % 3;
-
-  displayBoxes();
-}
