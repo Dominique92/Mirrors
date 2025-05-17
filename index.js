@@ -17,8 +17,8 @@ if ("serviceWorker" in navigator)
   .catch(error => console.log(error));
 */
 
-//TODO BUG ne compte pas les miroirs
-//TODO BUG déclenchement gagné / film gagné
+//TODO BUG déclenchement gagné
+//TODO film gagné
 //TODO lint css & html
 //TODO passer paramètres en # (comp.PWA)
 //TODO faire une icone Miroir
