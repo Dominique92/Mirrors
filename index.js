@@ -11,9 +11,11 @@ let currentColor = 0,
   ended = false;
 
 // Install as Progressive Web Application
+/*
 if ("serviceWorker" in navigator)
   navigator.serviceWorker.register("service-worker.js")
   .catch(error => console.log(error));
+*/
 
 //TODO BUG ne compte pas les miroirs
 //TODO BUG déclenchement gagné / film gagné
@@ -31,32 +33,31 @@ function nbMirrors() {
   return Math.min(size * size, Math.ceil(inputEls[1].value / 66 * size));
 }
 
-function displayInputs(nbm) {
+function displayInputs() {
   pEls[0].innerHTML = 'Taille : ' + inputEls[0].value + ' * ' + inputEls[0].value;
   pEls[1].innerHTML = nbMirrors() + ' miroir' + (nbMirrors() > 1 ? 's' : '');
-
-  if (nbm)
-    pEls[1].innerHTML += ' / ' + nbm + ' marque' + (nbm > 1 ? 's' : '');
 }
-displayInputs();
 
 // DISPLAY GAME
 function displayBoxes() {
+  displayInputs();
+
   // Clear all boxes if all mirrors are found
   if (!ended) {
-    let nbm = 0;
+    let nbmk = 0;
 
     ended = true;
     Array.from(spanEls).forEach(el => {
       if (el.x % size1 && el.y % size1) {
         if (el.mark !== el.mirror)
           ended = false;
-        if (el.mark)
-          nbm++;
+        if (el.mark === 1 || el.mark === 2)
+          nbmk++;
       }
     });
 
-    displayInputs(nbm);
+    if (nbmk)
+      pEls[1].innerHTML += ' / ' + nbmk + ' marqué' + (nbmk > 1 ? 's' : '');
   }
 
   // Display boxes
