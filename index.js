@@ -18,11 +18,10 @@ if ("serviceWorker" in navigator)
 */
 
 //TODO BUG déclenchement gagné
-//TODO film gagné
-//TODO lint css & html
 //TODO passer paramètres en # (comp.PWA)
-//TODO faire une icone Miroir
+//TODO film gagné
 //TODO bords ombre 3D
+//TODO lint css & html
 
 // Initialise input fields with parameters
 inputEls[0].value = sPars[1];
@@ -130,14 +129,8 @@ function clickBox(evt) {
     evt.target.mark = 3;
 
     // Crash if there is a mirror
-    if (evt.target.mirror) {
-      Array.from(spanEls).forEach(el => {
-        // Remove all free boxes
-        if (!el.mark && !el.mirror)
-          el.mark = 3; // Open
-      });
+    if (evt.target.mirror)
       ended = true;
-    }
   }
   // Switch marks
   else if (evt.target.mark < 3)
