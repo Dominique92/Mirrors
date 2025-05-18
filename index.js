@@ -17,10 +17,8 @@ if ("serviceWorker" in navigator)
   .catch(error => console.log(error));
 */
 
-//TODO BUG déclenchement gagné
 //TODO passer paramètres en # (comp.PWA)
 //TODO film gagné
-//TODO bords ombre 3D
 //TODO lint css & html
 
 // Initialise input fields with parameters
