@@ -12,6 +12,7 @@
   "bugs": {
     "url": "https://github.com/Dominique92/Mirrors/issues"
   },
+  "type": "module",
   "scripts": {
     "lint": "npx eslint index.html index.css *.js*",
     "beautify": "js-beautify -s=2 *.html *.css *.js*"

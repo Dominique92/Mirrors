@@ -48,7 +48,7 @@ function displayBoxes() {
     ended = true;
     Array.from(spanEls).forEach(el => {
       if (el.x % size1 && el.y % size1) {
-        if (el.mark !== el.mirror)
+        if (el.mark !== el.mirror && el.mark !== 3)
           ended = false;
         if (el.mark === 1 || el.mark === 2)
           nbmk++;
